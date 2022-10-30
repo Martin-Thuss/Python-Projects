@@ -1,0 +1,144 @@
+#Introduction
+
+print("""Welcome to the Billboard Top 100 App!
+
+""")
+
+#Open file
+file = open("charts.csv")
+file.readline()
+
+#Initialize Variables
+lovesongs = 0
+toptwo = []
+counter = 0
+beginswithA = []
+rankup = 0
+average = 0.00
+
+#For loop for all computations
+for line in file:
+    
+    #Identify data-sets
+    songlist = line.strip().split(",")
+    songtitle = songlist[2]
+    artist = songlist[3]
+    thisrank = int(songlist[1])
+    lastrank = int(songlist[4])
+    weeksonboard = int(songlist[6])
+    
+    #Love song calculator
+    if ("love") in songtitle.lower():
+        lovesongs += 1
+        
+    #If song is ranked 1 or 2, add to list of ranked songs
+    if ((1<=lastrank<= 2) or thisrank == 2):
+        toptwo.append(songtitle)
+        counter += 1
+        
+    #If Artist begins with A, add to list of artists
+    if artist[0].lower() == "a" and artist != "artist":
+        beginswithA += [artist]
+        
+    #If last rank is lower than current rank or zero calculator
+    if (thisrank < lastrank or lastrank == 0):
+        rankup += 1
+        
+    #Sum of all weeks on board
+    if type(weeksonboard) == int:
+        average += weeksonboard
+        
+#Print love song total
+print("Love Songs:", lovesongs ,"\n")
+
+#For each item in ranked list, print
+print("Songs names in rank positions 1 or 2:",counter)
+for line in toptwo:
+    print(line)
+print("\n")
+
+#For each item in 'a' starter list, print
+print("Artists names starting with 'A':")
+for line in beginswithA:
+    print(line)
+print("\n")
+
+#Print songs ranked higher
+print("Songs advancing in rank wrt previous weeks:", rankup ,"\n")
+
+#Calculate average and print
+average = average/500
+print("Average weeks on board all songs: {:.2f}".format(average))
+
+#Seperate part one and two
+print("""
+
+First Query: Individual Artist Songs\n""")
+
+noMatch = False
+
+#Restart file
+file.seek(0)
+counter = 0
+
+#Take input
+artistQuery = input("Artist name (may be part of the name) --> ").upper()
+for line in file:
+    songlist = line.strip().split(",")
+    
+    #Initialize variables
+    artist = songlist[3]
+    artistUpper = artist.upper()
+    name = songlist[2]
+    date = songlist[0]
+    nowRank = songlist[1]
+    lastRank = songlist[4]
+    
+    #If there is a match for the artist, print header, but only once
+    if artistQuery in artistUpper and (counter == 0):
+        print("Artist                    Song                      Date             Rank   Previous Rank\n")
+        counter += 1
+        noMatch = True
+        
+    #Print formatted list
+    if artistQuery in artistUpper:
+        print("{:<25}".format(artist), "{:<25}".format(name), date
+              , "{:>10}".format(nowRank), "{:>15}".format(lastRank))
+        
+#If there is no match for artist, print message
+if noMatch is False:
+    print("There are no songs associated with this artist.\n")
+
+#Initialize Variables
+noMatch = False
+file.seek(0)
+counter = 0
+originalWeeks = 0
+weeksOnBoard = 0
+
+print("Second Query: Songs and weeks on board")
+
+#Take input
+songQuery = input("Song Title (may be part of the title) --> ").upper()
+
+#For loop to find song title
+for line in file:
+    
+    songlist = line.strip().split(",")
+
+    name = songlist[2]
+    nameUpper = name.upper()
+    date = songlist[0]
+    weeksOnBoard = songlist[6]
+
+    if (counter == 0) and songQuery in nameUpper:
+        print("Song                      Date               Weeks on Board")
+        print("{:<25}".format(name), date, "{:>10}".format(weeksOnBoard))
+        counter += 1
+        noMatch = True
+        originalWeeks == weeksOnBoard
+        
+#If there is no song title containing input, print message
+if noMatch is False:
+    print("There is no song associated with this title")
+
